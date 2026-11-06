@@ -1,0 +1,133 @@
+table dim_paro
+	lineageTag: 19091a26-fc1b-4f83-afc6-c6b061ff2f3a
+
+	column paro_key
+		dataType: int64
+		formatString: 0
+		lineageTag: 3bb08002-5e47-4899-b44f-df7cbcf705cb
+		summarizeBy: none
+		sourceColumn: paro_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column area_impacto
+		dataType: string
+		lineageTag: b5ce1da7-f7fa-4b75-9b36-66431017dc89
+		summarizeBy: none
+		sourceColumn: area_impacto
+
+		annotation SummarizationSetBy = Automatic
+
+	column codigo_paro
+		dataType: string
+		lineageTag: 5fbb6d42-1c7f-4aaa-b35a-4ea7234cd9d1
+		summarizeBy: none
+		sourceColumn: codigo_paro
+
+		annotation SummarizationSetBy = Automatic
+
+	column nombre_paro
+		dataType: string
+		lineageTag: 4f5d8678-3490-4ac7-b09a-8329157a5cee
+		summarizeBy: none
+		sourceColumn: nombre_paro
+
+		annotation SummarizationSetBy = Automatic
+
+	column codigo_nombre
+		dataType: string
+		lineageTag: 2360b408-cebd-4d70-a581-b1326f14ed95
+		summarizeBy: none
+		sourceColumn: codigo_nombre
+
+		annotation SummarizationSetBy = Automatic
+
+	column subsistema_codigo
+		dataType: string
+		lineageTag: 5b07ae44-e05b-45ef-adb3-b9c224448acb
+		summarizeBy: none
+		sourceColumn: subsistema_codigo
+
+		annotation SummarizationSetBy = Automatic
+
+	column subsistema_nombre
+		dataType: string
+		lineageTag: 1465688a-395a-4409-97f9-05f4375472fa
+		summarizeBy: none
+		sourceColumn: subsistema_nombre
+
+		annotation SummarizationSetBy = Automatic
+
+	column componente_codigo
+		dataType: string
+		lineageTag: 0755d828-8b4a-4327-a704-6b8303059ac7
+		summarizeBy: none
+		sourceColumn: componente_codigo
+
+		annotation SummarizationSetBy = Automatic
+
+	column componente_nombre
+		dataType: string
+		lineageTag: 00fdd023-2932-480c-8e75-52028e8aa40e
+		summarizeBy: none
+		sourceColumn: componente_nombre
+
+		annotation SummarizationSetBy = Automatic
+
+	column es_programado
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 2d1de82c-1ce8-4c9f-bd66-f7caded1a76b
+		summarizeBy: none
+		sourceColumn: es_programado
+
+		annotation SummarizationSetBy = Automatic
+
+	column categoria_oee
+		dataType: string
+		lineageTag: da15f8a9-3fa5-4322-b8ae-97b219a8645c
+		summarizeBy: none
+		sourceColumn: categoria_oee
+
+		annotation SummarizationSetBy = Automatic
+
+	column origen
+		dataType: string
+		lineageTag: 02d7378a-07ff-4fd2-9bc4-db23a5b1e5bf
+		summarizeBy: none
+		sourceColumn: origen
+
+		annotation SummarizationSetBy = Automatic
+
+	hierarchy 'Jerarquía Paros'
+		lineageTag: 1b8a0a05-22a6-477a-995b-de84677de7b1
+
+		level 'Área de impacto'
+			lineageTag: 5bbc4044-09fc-4dda-a7f3-5615431228df
+			column: area_impacto
+
+		level Código
+			lineageTag: ff18e902-a9c8-4e04-8948-13f10ee0bc52
+			column: codigo_nombre
+
+		level Subsistema
+			lineageTag: 160119a7-af64-4bfd-a41c-2916d5ec6d0b
+			column: subsistema_nombre
+
+		level Componente
+			lineageTag: c4e34f64-000d-4772-a4fa-580db2b9f41f
+			column: componente_nombre
+
+	partition dim_paro = m
+		mode: import
+		source =
+				let
+				    Origen = PostgreSQL.Database("127.0.0.1:5433", "bi_envasado"),
+				    dw_dim_paro = Origen{[Schema="dw",Item="dim_paro"]}[Data]
+				in
+				    dw_dim_paro
+
+	annotation PBI_NavigationStepName = Navegación
+
+	annotation PBI_ResultType = Table
+

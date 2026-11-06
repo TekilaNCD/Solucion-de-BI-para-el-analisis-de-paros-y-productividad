@@ -1,0 +1,49 @@
+table dim_persona_involucrada
+	lineageTag: a47a23b9-67b7-4963-8bcd-cc568023bf27
+
+	column persona_key
+		dataType: int64
+		formatString: 0
+		lineageTag: 1cc971c3-0d84-4466-8f35-9a287d09ac93
+		summarizeBy: none
+		sourceColumn: persona_key
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column persona_involucrada
+		dataType: string
+		lineageTag: b234f91d-60e9-4c4f-8526-f865382178bd
+		summarizeBy: none
+		sourceColumn: persona_involucrada
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column rol_involucrada
+		dataType: string
+		lineageTag: b98a564f-620a-461d-950a-967c0e3ca271
+		summarizeBy: none
+		sourceColumn: rol_involucrada
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dim_persona_involucrada = m
+		mode: import
+		source =
+				let
+				    Origen = dim_persona,
+				    #"Columnas con nombre cambiado" = Table.RenameColumns(Origen,{{"operaria", "persona_involucrada"}, {"rol_operaria", "rol_involucrada"}})
+				in
+				    #"Columnas con nombre cambiado"
+
+	changedProperty = IsHidden
+
+	annotation PBI_NavigationStepName = Navegación
+
+	annotation PBI_ResultType = Table
+

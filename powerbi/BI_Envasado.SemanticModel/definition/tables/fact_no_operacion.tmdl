@@ -1,0 +1,79 @@
+table fact_no_operacion
+	lineageTag: a3395bef-3c1c-4820-aa5f-5cb73f56f0fa
+
+	column no_operacion_id
+		dataType: int64
+		formatString: 0
+		lineageTag: c8f4f908-b23e-4958-84ee-0a630444266a
+		summarizeBy: sum
+		sourceColumn: no_operacion_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column fecha_key
+		dataType: int64
+		formatString: 0
+		lineageTag: 506f8346-eda8-49c9-b9d9-42b37a17f827
+		summarizeBy: none
+		sourceColumn: fecha_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column maquina_key
+		dataType: int64
+		formatString: 0
+		lineageTag: aea520ab-c984-4794-9553-8309b97b9fb4
+		summarizeBy: none
+		sourceColumn: maquina_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column turno_key
+		dataType: int64
+		formatString: 0
+		lineageTag: a9be9f22-8abc-4de1-a901-9685cd60c55a
+		summarizeBy: none
+		sourceColumn: turno_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column causa_key
+		dataType: int64
+		formatString: 0
+		lineageTag: 4380efef-0106-42f0-a1a5-6603e0466c13
+		summarizeBy: none
+		sourceColumn: causa_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column horas_no_operadas
+		dataType: double
+		lineageTag: 82a88bca-3a1d-458e-a2c9-bd1f00287e53
+		summarizeBy: sum
+		sourceColumn: horas_no_operadas
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column observacion_paro
+		dataType: string
+		lineageTag: dea2eb37-432d-4eda-92a5-81341a03604a
+		summarizeBy: none
+		sourceColumn: observacion_paro
+
+		annotation SummarizationSetBy = Automatic
+
+	partition fact_no_operacion = m
+		mode: import
+		source =
+				let
+				    Origen = PostgreSQL.Database("127.0.0.1:5433", "bi_envasado"),
+				    dw_fact_no_operacion = Origen{[Schema="dw",Item="fact_no_operacion"]}[Data]
+				in
+				    dw_fact_no_operacion
+
+	annotation PBI_NavigationStepName = Navegación
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,76 @@
+table dim_maquina
+	lineageTag: 0451c41e-b238-4bc1-a292-7975eb7a76cd
+
+	column maquina_key
+		dataType: int64
+		formatString: 0
+		lineageTag: db90903c-d197-4e4e-98ce-1ca187b4217e
+		summarizeBy: none
+		sourceColumn: maquina_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column maquina_codigo
+		dataType: string
+		lineageTag: d3f253ad-cdd5-4d98-bb5e-d6c7cae4d9f0
+		summarizeBy: none
+		sourceColumn: maquina_codigo
+
+		annotation SummarizationSetBy = Automatic
+
+	column nombre
+		dataType: string
+		lineageTag: 6e365337-1771-4a70-a40a-4961752828c7
+		summarizeBy: none
+		sourceColumn: nombre
+
+		annotation SummarizationSetBy = Automatic
+
+	column linea_producto
+		dataType: string
+		lineageTag: d6b41108-45a6-41c1-8d20-770ad55306f7
+		summarizeBy: none
+		sourceColumn: linea_producto
+
+		annotation SummarizationSetBy = Automatic
+
+	column planta
+		dataType: string
+		lineageTag: f56d13f4-d29b-4926-a103-6d8c3fa14304
+		summarizeBy: none
+		sourceColumn: planta
+
+		annotation SummarizationSetBy = Automatic
+
+	column factor_velocidad
+		dataType: double
+		lineageTag: 9727b89c-1b1f-495f-b28f-7247b6e2c89b
+		summarizeBy: sum
+		sourceColumn: factor_velocidad
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column activa
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 5413506a-3fbb-4758-a6d9-152e23ec5385
+		summarizeBy: none
+		sourceColumn: activa
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dim_maquina = m
+		mode: import
+		source =
+				let
+				    Origen = PostgreSQL.Database("127.0.0.1:5433", "bi_envasado"),
+				    dw_dim_maquina = Origen{[Schema="dw",Item="dim_maquina"]}[Data]
+				in
+				    dw_dim_maquina
+
+	annotation PBI_NavigationStepName = Navegación
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,226 @@
+createOrReplace
+
+	table _Medidas
+		lineageTag: 8d5818eb-3983-4fee-ac8e-67d252eb95f6
+
+		measure 'Horas Trabajadas' =
+				SUM ( fact_produccion_turno[horas_trabajadas] )
+			formatString: #,0.0
+			displayFolder: 1. Base
+
+		measure 'Horas Planificadas' =
+				SUM ( fact_produccion_turno[horas_planificadas] )
+			formatString: #,0.0
+			displayFolder: 1. Base
+
+		measure 'Horas Operativas' =
+				SUM ( fact_produccion_turno[horas_operativas] )
+			formatString: #,0.0
+			displayFolder: 1. Base
+
+		measure 'Horas Paro Turno' =
+				SUM ( fact_produccion_turno[horas_paro_total] )
+			formatString: #,0.0
+			displayFolder: 1. Base
+
+		measure 'Horas Paro' =
+				SUM ( fact_paro[horas_paro] )
+			formatString: #,0.0
+			displayFolder: 1. Base
+
+		measure 'Minutos Paro' =
+				SUM ( fact_paro[minutos_paro] )
+			formatString: #,0
+			displayFolder: 1. Base
+
+		measure 'Eventos de Paro' =
+				COUNTROWS ( fact_paro )
+			formatString: #,0
+			displayFolder: 1. Base
+
+		measure 'Pacas' =
+				SUM ( fact_produccion_turno[pacas_producidas] )
+			formatString: #,0
+			displayFolder: 1. Base
+
+		measure 'Pacas Meta' =
+				SUM ( fact_produccion_turno[pacas_meta_turno] )
+			formatString: #,0
+			displayFolder: 1. Base
+
+		measure 'Horas No Operadas' =
+				SUM ( fact_no_operacion[horas_no_operadas] )
+			formatString: #,0
+			displayFolder: 1. Base
+
+		measure '% Productividad (Excel)' =
+				DIVIDE ( [Horas Trabajadas] - [Horas Paro Turno], [Horas Trabajadas] )
+			formatString: 0.0%
+			displayFolder: 2. P-MTO-22
+
+		measure '% Paro sobre Horas Trabajadas' =
+				DIVIDE ( [Horas Paro], [Horas Trabajadas] )
+			formatString: 0.0%
+			displayFolder: 2. P-MTO-22
+
+		measure 'Disponibilidad' =
+				DIVIDE ( [Horas Operativas], [Horas Planificadas] )
+			formatString: 0.0%
+			displayFolder: 3. OEE
+
+		measure 'Rendimiento' =
+				VAR _pacas =
+				    CALCULATE (
+				        SUM ( fact_produccion_turno[pacas_producidas] ),
+				        fact_produccion_turno[pacas_ideales] > 0,
+				        NOT ISBLANK ( fact_produccion_turno[pacas_producidas] )
+				    )
+				VAR _ideal =
+				    CALCULATE (
+				        SUM ( fact_produccion_turno[pacas_ideales] ),
+				        fact_produccion_turno[pacas_ideales] > 0,
+				        NOT ISBLANK ( fact_produccion_turno[pacas_producidas] )
+				    )
+				VAR _r = DIVIDE ( _pacas, _ideal )
+				RETURN IF ( ISBLANK ( _r ), BLANK (), MIN ( 1, _r ) )
+			formatString: 0.0%
+			displayFolder: 3. OEE
+
+		measure 'Calidad (proxy reproceso)' =
+				1 - DIVIDE ( SUM ( fact_produccion_turno[horas_reproceso] ), [Horas Operativas] )
+			formatString: 0.0%
+			displayFolder: 3. OEE
+
+		measure 'OEE' =
+				VAR _disp =
+				    CALCULATE (
+				        DIVIDE ( [Horas Operativas], [Horas Planificadas] ),
+				        fact_produccion_turno[pacas_ideales] > 0,
+				        NOT ISBLANK ( fact_produccion_turno[pacas_producidas] )
+				    )
+				RETURN IF ( ISBLANK ( [Rendimiento] ), BLANK (), _disp * [Rendimiento] * [Calidad (proxy reproceso)] )
+			formatString: 0.0%
+			displayFolder: 3. OEE
+
+		measure 'Cumplimiento Meta' =
+				DIVIDE ( [Pacas], [Pacas Meta] )
+			formatString: 0.0%
+			displayFolder: 3. OEE
+
+		measure 'Pacas Mes Anterior' =
+				CALCULATE ( [Pacas], DATEADD ( dim_fecha[fecha], -1, MONTH ) )
+			formatString: #,0
+			displayFolder: 4. Tiempo
+
+		measure 'Var Pacas vs Mes Anterior %' =
+				DIVIDE ( [Pacas] - [Pacas Mes Anterior], [Pacas Mes Anterior] )
+			formatString: 0.0%
+			displayFolder: 4. Tiempo
+
+		measure 'Pacas Año Anterior' =
+				CALCULATE ( [Pacas], SAMEPERIODLASTYEAR ( dim_fecha[fecha] ) )
+			formatString: #,0
+			displayFolder: 4. Tiempo
+
+		measure 'Var Pacas YoY %' =
+				DIVIDE ( [Pacas] - [Pacas Año Anterior], [Pacas Año Anterior] )
+			formatString: 0.0%
+			displayFolder: 4. Tiempo
+
+		measure 'Pacas YTD' =
+				TOTALYTD ( [Pacas], dim_fecha[fecha] )
+			formatString: #,0
+			displayFolder: 4. Tiempo
+
+		measure 'Pacas YTD Año Anterior' =
+				CALCULATE ( [Pacas YTD], SAMEPERIODLASTYEAR ( dim_fecha[fecha] ) )
+			formatString: #,0
+			displayFolder: 4. Tiempo
+
+		measure 'OEE Año Anterior' =
+				CALCULATE ( [OEE], SAMEPERIODLASTYEAR ( dim_fecha[fecha] ) )
+			formatString: 0.0%
+			displayFolder: 4. Tiempo
+
+		measure 'Var OEE YoY (pp)' =
+				IF ( ISBLANK ( [OEE Año Anterior] ), BLANK (), [OEE] - [OEE Año Anterior] )
+			formatString: 0.0%
+			displayFolder: 4. Tiempo
+
+		measure 'Disponibilidad Media Movil 3M' =
+				CALCULATE (
+				    [Disponibilidad],
+				    DATESINPERIOD ( dim_fecha[fecha], MAX ( dim_fecha[fecha] ), -3, MONTH )
+				)
+			formatString: 0.0%
+			displayFolder: 4. Tiempo
+
+		measure 'Fallas Electromecanicas' =
+				CALCULATE ( [Eventos de Paro], dim_paro[codigo_paro] = "01" )
+			formatString: #,0
+			displayFolder: 5. Mantenimiento
+
+		measure 'MTTR (min)' =
+				DIVIDE ( CALCULATE ( [Minutos Paro], dim_paro[codigo_paro] = "01" ), [Fallas Electromecanicas] )
+			formatString: #,0.0
+			displayFolder: 5. Mantenimiento
+
+		measure 'MTBF (h)' =
+				DIVIDE ( [Horas Operativas], [Fallas Electromecanicas] )
+			formatString: #,0.0
+			displayFolder: 5. Mantenimiento
+
+		measure '% Paro No Programado' =
+				DIVIDE ( CALCULATE ( [Horas Paro], dim_paro[es_programado] = FALSE () ), [Horas Trabajadas] )
+			formatString: 0.0%
+			displayFolder: 5. Mantenimiento
+
+		measure '% Tiempo Sin Operar' =
+				DIVIDE ( [Horas No Operadas], [Horas No Operadas] + [Horas Trabajadas] )
+			formatString: 0.0%
+			displayFolder: 5. Mantenimiento
+
+		measure 'Ranking Causa' =
+				RANKX ( ALLSELECTED ( dim_paro[codigo_nombre] ), [Horas Paro], , DESC, DENSE )
+			formatString: 0
+			displayFolder: 6. Pareto
+
+		measure 'Pareto % Acumulado' =
+				VAR _h = [Horas Paro]
+				VAR _total = CALCULATE ( [Horas Paro], ALLSELECTED ( dim_paro[codigo_nombre] ) )
+				VAR _acum =
+				    SUMX (
+				        FILTER ( ALLSELECTED ( dim_paro[codigo_nombre] ), CALCULATE ( [Horas Paro] ) >= _h ),
+				        CALCULATE ( [Horas Paro] )
+				    )
+				RETURN DIVIDE ( _acum, _total )
+			formatString: 0.0%
+			displayFolder: 6. Pareto
+
+		measure 'Pareto Clase ABC' =
+				VAR _p = [Pareto % Acumulado]
+				VAR _previo = _p - DIVIDE ( [Horas Paro], CALCULATE ( [Horas Paro], ALLSELECTED ( dim_paro[codigo_nombre] ) ) )
+				RETURN SWITCH ( TRUE (), ISBLANK ( _p ), BLANK (), _previo < 0.8, "A", _previo < 0.95, "B", "C" )
+			displayFolder: 6. Pareto
+
+		column Columna1
+			dataType: string
+			lineageTag: 37e00bbf-634f-43f8-9556-30f0b33d2fab
+			summarizeBy: none
+			sourceColumn: Columna1
+
+			annotation SummarizationSetBy = Automatic
+
+		partition _Medidas = m
+			mode: import
+			source =
+					let
+					    Origen = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i44FAA==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Columna1 = _t]),
+					    #"Tipo cambiado" = Table.TransformColumnTypes(Origen,{{"Columna1", type text}})
+					in
+					    #"Tipo cambiado"
+
+		changedProperty = Name
+		
+		annotation PBI_ResultType = Table
+

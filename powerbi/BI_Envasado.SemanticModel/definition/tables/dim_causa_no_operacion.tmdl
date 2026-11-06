@@ -1,0 +1,57 @@
+table dim_causa_no_operacion
+	lineageTag: f5c72806-e1f8-4002-9cea-44a55a5c1819
+
+	column causa_key
+		dataType: int64
+		formatString: 0
+		lineageTag: 8fdce407-9ca5-4434-934a-b71ac694b1a6
+		summarizeBy: none
+		sourceColumn: causa_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column texto_origen
+		dataType: string
+		lineageTag: 2f355378-0873-48f4-87ab-8388fe2903cc
+		summarizeBy: none
+		sourceColumn: texto_origen
+
+		annotation SummarizationSetBy = Automatic
+
+	column causa_homologada
+		dataType: string
+		lineageTag: 8e94572f-0f1c-4216-a343-bf74dd1176b1
+		summarizeBy: none
+		sourceColumn: causa_homologada
+
+		annotation SummarizationSetBy = Automatic
+
+	column area_responsable
+		dataType: string
+		lineageTag: ddbceaf7-cacc-40ba-aa4f-ebc8c0806056
+		summarizeBy: none
+		sourceColumn: area_responsable
+
+		annotation SummarizationSetBy = Automatic
+
+	column catalogo
+		dataType: string
+		lineageTag: a2ee0255-9021-4844-be6a-c4c191318b0d
+		summarizeBy: none
+		sourceColumn: catalogo
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dim_causa_no_operacion = m
+		mode: import
+		source =
+				let
+				    Origen = PostgreSQL.Database("127.0.0.1:5433", "bi_envasado"),
+				    dw_dim_causa_no_operacion = Origen{[Schema="dw",Item="dim_causa_no_operacion"]}[Data]
+				in
+				    dw_dim_causa_no_operacion
+
+	annotation PBI_NavigationStepName = Navegación
+
+	annotation PBI_ResultType = Table
+

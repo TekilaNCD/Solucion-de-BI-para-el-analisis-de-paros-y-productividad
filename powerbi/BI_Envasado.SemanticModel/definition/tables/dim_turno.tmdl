@@ -1,0 +1,89 @@
+table dim_turno
+	lineageTag: 702f2abf-897e-454e-ae48-75626c52e7ff
+
+	column turno_key
+		dataType: int64
+		formatString: 0
+		lineageTag: 8de29387-7be3-4379-9cd0-2889cbf45a8d
+		summarizeBy: none
+		sourceColumn: turno_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column turno_codigo
+		dataType: string
+		lineageTag: 296f8c2d-900a-4048-981a-a205ba51b055
+		summarizeBy: none
+		sourceColumn: turno_codigo
+
+		annotation SummarizationSetBy = Automatic
+
+	column descripcion
+		dataType: string
+		lineageTag: 7f350357-56ec-4d80-9e73-f2773c285f22
+		summarizeBy: none
+		sourceColumn: descripcion
+
+		annotation SummarizationSetBy = Automatic
+
+	column hora_inicio
+		dataType: dateTime
+		formatString: Long Time
+		lineageTag: e5f50fec-16af-4d6b-9b46-5a9e1cb31581
+		summarizeBy: none
+		sourceColumn: hora_inicio
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Time
+
+	column hora_fin
+		dataType: dateTime
+		formatString: Long Time
+		lineageTag: 1eb7d25d-355f-423e-9ef4-824e3d4617cc
+		summarizeBy: none
+		sourceColumn: hora_fin
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Time
+
+	column duracion_h
+		dataType: double
+		lineageTag: 50e764a3-8386-4ede-8336-169836442850
+		summarizeBy: sum
+		sourceColumn: duracion_h
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column esquema
+		dataType: string
+		lineageTag: 1cee7506-59cb-4161-a2e1-4aa8c2b07100
+		summarizeBy: none
+		sourceColumn: esquema
+
+		annotation SummarizationSetBy = Automatic
+
+	column jornada
+		dataType: string
+		lineageTag: 7a7767cd-0199-4d99-9007-785725d6cf2f
+		summarizeBy: none
+		sourceColumn: jornada
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dim_turno = m
+		mode: import
+		source =
+				let
+				    Origen = PostgreSQL.Database("127.0.0.1:5433", "bi_envasado"),
+				    dw_dim_turno = Origen{[Schema="dw",Item="dim_turno"]}[Data]
+				in
+				    dw_dim_turno
+
+	annotation PBI_NavigationStepName = Navegación
+
+	annotation PBI_ResultType = Table
+

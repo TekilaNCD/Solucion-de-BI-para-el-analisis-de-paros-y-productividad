@@ -1,0 +1,33 @@
+model Model
+	culture: es-ES
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: es-CO
+	valueFilterBehavior: independent
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBI_QueryOrder = ["dim_fecha","dim_maquina","dim_turno","dim_referencia","dim_causa_no_operacion","dim_paro","dim_persona","fact_no_operacion","fact_paro","fact_produccion_turno","dim_persona_involucrada","_Medidas"]
+
+annotation PBI_ProTooling = ["TMDLView_Desktop","DevMode"]
+
+ref table dim_fecha
+ref table DateTableTemplate_f8362881-a87c-40b5-9af2-95c82f2dcf7d
+ref table dim_maquina
+ref table dim_turno
+ref table dim_referencia
+ref table LocalDateTable_2f2471e2-7a9d-4f53-9dbc-4b370390e133
+ref table LocalDateTable_4d4b8d1c-d3ed-4e43-a63c-aae970e6465f
+ref table dim_causa_no_operacion
+ref table dim_paro
+ref table dim_persona
+ref table fact_no_operacion
+ref table fact_paro
+ref table fact_produccion_turno
+ref table dim_persona_involucrada
+ref table _Medidas
+
+ref cultureInfo es-ES
+

@@ -1,0 +1,74 @@
+relationship 9285cd95-a0a6-4c5f-8530-edcd3f29fe18
+	joinOnDateBehavior: datePartOnly
+	fromColumn: dim_referencia.valido_desde
+	toColumn: LocalDateTable_2f2471e2-7a9d-4f53-9dbc-4b370390e133.Date
+
+relationship 0dec9fba-0398-4fbd-9600-39ff58d9cd83
+	joinOnDateBehavior: datePartOnly
+	fromColumn: dim_referencia.valido_hasta
+	toColumn: LocalDateTable_4d4b8d1c-d3ed-4e43-a63c-aae970e6465f.Date
+
+relationship AutoDetected_328ee191-10c1-4cac-9811-f4637dbbf9ab
+	fromColumn: fact_no_operacion.fecha_key
+	toColumn: dim_fecha.fecha_key
+
+relationship AutoDetected_a4804e66-4fa1-4b55-9933-a009c9f80b22
+	fromColumn: fact_paro.fecha_key
+	toColumn: dim_fecha.fecha_key
+
+relationship AutoDetected_b8a4efcb-5f45-41d3-9158-844f03f89a99
+	fromColumn: fact_produccion_turno.fecha_key
+	toColumn: dim_fecha.fecha_key
+
+relationship AutoDetected_d8a15783-744b-463e-b6a0-d6fe40a70f11
+	fromColumn: fact_no_operacion.maquina_key
+	toColumn: dim_maquina.maquina_key
+
+relationship AutoDetected_bf8fd83a-6675-48a3-a6a8-4306dc35d3ad
+	fromColumn: fact_paro.maquina_key
+	toColumn: dim_maquina.maquina_key
+
+relationship AutoDetected_c19363d0-d497-4209-ae83-2f48e269f879
+	fromColumn: fact_produccion_turno.maquina_key
+	toColumn: dim_maquina.maquina_key
+
+relationship AutoDetected_19fbff26-5f74-4aba-9e0f-3a029f6f2b52
+	fromColumn: fact_no_operacion.turno_key
+	toColumn: dim_turno.turno_key
+
+relationship AutoDetected_df450ec0-962c-4b9c-a25b-6e424febf181
+	fromColumn: fact_paro.turno_key
+	toColumn: dim_turno.turno_key
+
+relationship AutoDetected_3b80489e-6b56-4837-a1d1-2ffecfc876ae
+	fromColumn: fact_produccion_turno.turno_key
+	toColumn: dim_turno.turno_key
+
+relationship AutoDetected_d65ebd5f-16b4-48ff-8a33-6da49a2b07e6
+	fromColumn: fact_paro.referencia_key
+	toColumn: dim_referencia.referencia_key
+
+relationship AutoDetected_3f30b7f6-3556-4cbf-a945-186110528d40
+	fromColumn: fact_produccion_turno.referencia_key
+	toColumn: dim_referencia.referencia_key
+
+relationship AutoDetected_9f58a06d-8597-4fda-a4b5-5313bdb4b5ec
+	fromColumn: fact_no_operacion.causa_key
+	toColumn: dim_causa_no_operacion.causa_key
+
+relationship AutoDetected_cefa70bc-7c5d-459c-97e0-147a6c14f9e4
+	fromColumn: fact_paro.paro_key
+	toColumn: dim_paro.paro_key
+
+relationship d04a560f-3d0c-43c4-381d-0c54f6a30dc8
+	fromColumn: fact_produccion_turno.operario_key
+	toColumn: dim_persona.persona_key
+
+relationship 11e4dafc-151e-5a2d-7bb9-9500db8d5e5d
+	fromColumn: fact_paro.operario_key
+	toColumn: dim_persona.persona_key
+
+relationship 8cfc5d6f-13d3-3f3e-1815-d90df36124b7
+	fromColumn: fact_paro.persona_involucrada_key
+	toColumn: dim_persona_involucrada.persona_key
+

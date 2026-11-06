@@ -1,0 +1,42 @@
+table dim_persona
+	lineageTag: 602b0d28-3756-4960-8fbb-42a65e47429b
+
+	column persona_key
+		dataType: int64
+		formatString: 0
+		lineageTag: e691a74a-429f-485b-87e0-c04b8e002f6b
+		summarizeBy: none
+		sourceColumn: persona_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column operaria
+		dataType: string
+		lineageTag: e01576a3-f994-410e-8dd6-5d774e5d7c57
+		summarizeBy: none
+		sourceColumn: operaria
+
+		annotation SummarizationSetBy = Automatic
+
+	column rol_operaria
+		dataType: string
+		lineageTag: a700e133-b430-4e11-9c50-42a75d017887
+		summarizeBy: none
+		sourceColumn: rol_operaria
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dim_persona = m
+		mode: import
+		source =
+				let
+				    Origen = PostgreSQL.Database("127.0.0.1:5433", "bi_envasado"),
+				    dw_dim_persona = Origen{[Schema="dw",Item="dim_persona"]}[Data],
+				    #"Columnas con nombre cambiado" = Table.RenameColumns(dw_dim_persona,{{"alias", "operaria"}, {"rol", "rol_operaria"}})
+				in
+				    #"Columnas con nombre cambiado"
+
+	annotation PBI_NavigationStepName = Navegación
+
+	annotation PBI_ResultType = Table
+

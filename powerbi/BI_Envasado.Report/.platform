@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "BI_Envasado"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "4f3dce0e-cf4e-46ea-89c7-aa3c21d3c55d"
+  }
+}

@@ -1,0 +1,112 @@
+// =============================================================================
+// medidas.dax · Medidas del modelo semántico (crear en una tabla vacía "_Medidas")
+// Mismas definiciones de KPI que dw.v_oee_mensual (SQL) y ops.v_oee_hora (Grafana).
+// =============================================================================
+
+// ---------- Base -------------------------------------------------------------
+Horas Trabajadas = SUM ( fact_produccion_turno[horas_trabajadas] )
+Horas Planificadas = SUM ( fact_produccion_turno[horas_planificadas] )
+Horas Operativas = SUM ( fact_produccion_turno[horas_operativas] )
+Horas Paro Turno = SUM ( fact_produccion_turno[horas_paro_total] )
+Horas Paro = SUM ( fact_paro[horas_paro] )                       // se puede abrir por la jerarquía de dim_paro
+Minutos Paro = SUM ( fact_paro[minutos_paro] )
+Eventos de Paro = COUNTROWS ( fact_paro )
+Pacas = SUM ( fact_produccion_turno[pacas_producidas] )
+Pacas Meta = SUM ( fact_produccion_turno[pacas_meta_turno] )
+Horas No Operadas = SUM ( fact_no_operacion[horas_no_operadas] )
+
+// ---------- Indicadores que hoy reporta el P-MTO-22 --------------------------
+% Productividad (Excel) =
+DIVIDE ( [Horas Trabajadas] - [Horas Paro Turno], [Horas Trabajadas] )
+
+// % de horas trabajadas perdidas por el código/subcódigo en contexto
+// (dim_paro no filtra fact_produccion_turno → el denominador es el total del periodo/máquina)
+% Paro sobre Horas Trabajadas =
+DIVIDE ( [Horas Paro], [Horas Trabajadas] )
+
+// ---------- OEE ----------------------------------------------------------------
+Disponibilidad = DIVIDE ( [Horas Operativas], [Horas Planificadas] )
+
+Rendimiento =
+VAR _pacas =
+    CALCULATE (
+        SUM ( fact_produccion_turno[pacas_producidas] ),
+        fact_produccion_turno[pacas_ideales] > 0,
+        NOT ISBLANK ( fact_produccion_turno[pacas_producidas] )
+    )
+VAR _ideal =
+    CALCULATE (
+        SUM ( fact_produccion_turno[pacas_ideales] ),
+        fact_produccion_turno[pacas_ideales] > 0,
+        NOT ISBLANK ( fact_produccion_turno[pacas_producidas] )
+    )
+VAR _r = DIVIDE ( _pacas, _ideal )
+RETURN IF ( ISBLANK ( _r ), BLANK (), MIN ( 1, _r ) )
+
+Calidad (proxy reproceso) =
+1 - DIVIDE ( SUM ( fact_produccion_turno[horas_reproceso] ), [Horas Operativas] )
+
+// OEE solo sobre turnos con referencia conocida (los demás no tienen tasa ideal)
+OEE =
+VAR _disp =
+    CALCULATE (
+        DIVIDE ( [Horas Operativas], [Horas Planificadas] ),
+        fact_produccion_turno[pacas_ideales] > 0,
+        NOT ISBLANK ( fact_produccion_turno[pacas_producidas] )
+    )
+RETURN IF ( ISBLANK ( [Rendimiento] ), BLANK (), _disp * [Rendimiento] * [Calidad (proxy reproceso)] )
+
+Cumplimiento Meta = DIVIDE ( [Pacas], [Pacas Meta] )
+
+// ---------- Inteligencia de tiempo (dim_fecha marcada como tabla de fechas) ---
+Pacas Mes Anterior = CALCULATE ( [Pacas], DATEADD ( dim_fecha[fecha], -1, MONTH ) )
+Var Pacas vs Mes Anterior % = DIVIDE ( [Pacas] - [Pacas Mes Anterior], [Pacas Mes Anterior] )
+
+Pacas Año Anterior = CALCULATE ( [Pacas], SAMEPERIODLASTYEAR ( dim_fecha[fecha] ) )
+Var Pacas YoY % = DIVIDE ( [Pacas] - [Pacas Año Anterior], [Pacas Año Anterior] )
+
+Pacas YTD = TOTALYTD ( [Pacas], dim_fecha[fecha] )
+Pacas YTD Año Anterior = CALCULATE ( [Pacas YTD], SAMEPERIODLASTYEAR ( dim_fecha[fecha] ) )
+
+OEE Año Anterior = CALCULATE ( [OEE], SAMEPERIODLASTYEAR ( dim_fecha[fecha] ) )
+Var OEE YoY (pp) = IF ( ISBLANK ( [OEE Año Anterior] ), BLANK (), [OEE] - [OEE Año Anterior] )
+
+Disponibilidad Media Movil 3M =
+CALCULATE (
+    [Disponibilidad],
+    DATESINPERIOD ( dim_fecha[fecha], MAX ( dim_fecha[fecha] ), -3, MONTH )
+)
+
+// ---------- KPI nuevos (el Excel no los calcula) ------------------------------
+Fallas Electromecanicas = CALCULATE ( [Eventos de Paro], dim_paro[codigo_paro] = "01" )
+
+MTTR (min) =
+DIVIDE ( CALCULATE ( [Minutos Paro], dim_paro[codigo_paro] = "01" ), [Fallas Electromecanicas] )
+
+MTBF (h) = DIVIDE ( [Horas Operativas], [Fallas Electromecanicas] )
+
+% Paro No Programado =
+DIVIDE ( CALCULATE ( [Horas Paro], dim_paro[es_programado] = FALSE () ), [Horas Trabajadas] )
+
+% Tiempo Sin Operar =
+DIVIDE ( [Horas No Operadas], [Horas No Operadas] + [Horas Trabajadas] )
+
+// ---------- Pareto de causas ---------------------------------------------------
+Ranking Causa =
+RANKX ( ALLSELECTED ( dim_paro[codigo_nombre] ), [Horas Paro], , DESC, DENSE )
+
+Pareto % Acumulado =
+VAR _h = [Horas Paro]
+VAR _total = CALCULATE ( [Horas Paro], ALLSELECTED ( dim_paro[codigo_nombre] ) )
+VAR _acum =
+    SUMX (
+        FILTER ( ALLSELECTED ( dim_paro[codigo_nombre] ), CALCULATE ( [Horas Paro] ) >= _h ),
+        CALCULATE ( [Horas Paro] )
+    )
+RETURN DIVIDE ( _acum, _total )
+
+// A = causas que completan el 80 %, B = hasta el 95 %, C = el resto (igual que la consulta SQL Q3)
+Pareto Clase ABC =
+VAR _p = [Pareto % Acumulado]
+VAR _previo = _p - DIVIDE ( [Horas Paro], CALCULATE ( [Horas Paro], ALLSELECTED ( dim_paro[codigo_nombre] ) ) )
+RETURN SWITCH ( TRUE (), ISBLANK ( _p ), BLANK (), _previo < 0.8, "A", _previo < 0.95, "B", "C" )

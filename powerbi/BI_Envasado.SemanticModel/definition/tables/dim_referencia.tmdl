@@ -1,0 +1,146 @@
+table dim_referencia
+	lineageTag: aed3c38f-93c5-4f37-9c77-c223873fbed1
+
+	column referencia_key
+		dataType: int64
+		formatString: 0
+		lineageTag: 099706c6-2b2c-4658-8468-cc79fbeaf465
+		summarizeBy: none
+		sourceColumn: referencia_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column referencia_nk
+		dataType: string
+		lineageTag: e18c2152-3ca9-4b74-82e1-5026d2c207ee
+		summarizeBy: none
+		sourceColumn: referencia_nk
+
+		annotation SummarizationSetBy = Automatic
+
+	column marca
+		dataType: string
+		lineageTag: 169d2faf-a256-48ef-9a49-0fbfeb9bf174
+		summarizeBy: none
+		sourceColumn: marca
+
+		annotation SummarizationSetBy = Automatic
+
+	column presentacion_cc
+		dataType: int64
+		formatString: 0
+		lineageTag: 095696ed-6f8c-4e3c-9fbc-bbe606b35a1e
+		summarizeBy: sum
+		sourceColumn: presentacion_cc
+
+		annotation SummarizationSetBy = Automatic
+
+	column num_colores
+		dataType: int64
+		formatString: 0
+		lineageTag: d5911f85-e4bc-44a1-9c6d-cfe880f94370
+		summarizeBy: sum
+		sourceColumn: num_colores
+
+		annotation SummarizationSetBy = Automatic
+
+	column unidades_por_paca
+		dataType: int64
+		formatString: 0
+		lineageTag: 14fa37eb-d09e-407e-8f21-6138d55c01ff
+		summarizeBy: sum
+		sourceColumn: unidades_por_paca
+
+		annotation SummarizationSetBy = Automatic
+
+	column tasa_estandar_pacas_h
+		dataType: double
+		lineageTag: 14bb06b8-f725-4379-9b9b-e88c75ed0951
+		summarizeBy: sum
+		sourceColumn: tasa_estandar_pacas_h
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column tasa_ideal_pacas_h
+		dataType: double
+		lineageTag: be008b3f-3ca8-4061-bce6-e2131711fbe8
+		summarizeBy: sum
+		sourceColumn: tasa_ideal_pacas_h
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column fuente_tasa
+		dataType: string
+		lineageTag: 8e304ff5-ce7f-44a9-ac30-02e693e48749
+		summarizeBy: none
+		sourceColumn: fuente_tasa
+
+		annotation SummarizationSetBy = Automatic
+
+	column valido_desde
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: d5515dbd-713e-425b-8804-04a1e8695cab
+		summarizeBy: none
+		sourceColumn: valido_desde
+
+		variation Variation
+			isDefault
+			relationship: 9285cd95-a0a6-4c5f-8530-edcd3f29fe18
+			defaultHierarchy: LocalDateTable_2f2471e2-7a9d-4f53-9dbc-4b370390e133.'Jerarquía de fechas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column valido_hasta
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 73a0c361-66e2-47d1-9239-6494f01322a2
+		summarizeBy: none
+		sourceColumn: valido_hasta
+
+		variation Variation
+			isDefault
+			relationship: 0dec9fba-0398-4fbd-9600-39ff58d9cd83
+			defaultHierarchy: LocalDateTable_4d4b8d1c-d3ed-4e43-a63c-aae970e6465f.'Jerarquía de fechas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column es_actual
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 5e18a1f9-e041-4967-aac1-814424df4bd7
+		summarizeBy: none
+		sourceColumn: es_actual
+
+		annotation SummarizationSetBy = Automatic
+
+	column version
+		dataType: int64
+		formatString: 0
+		lineageTag: 7682faae-16d2-40b2-91b4-04bcf8c5ea50
+		summarizeBy: sum
+		sourceColumn: version
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dim_referencia = m
+		mode: import
+		source =
+				let
+				    Origen = PostgreSQL.Database("127.0.0.1:5433", "bi_envasado"),
+				    dw_dim_referencia = Origen{[Schema="dw",Item="dim_referencia"]}[Data]
+				in
+				    dw_dim_referencia
+
+	annotation PBI_NavigationStepName = Navegación
+
+	annotation PBI_ResultType = Table
+

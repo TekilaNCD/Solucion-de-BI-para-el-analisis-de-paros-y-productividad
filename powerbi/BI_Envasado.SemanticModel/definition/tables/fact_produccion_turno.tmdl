@@ -1,0 +1,225 @@
+table fact_produccion_turno
+	lineageTag: 3a16cd7b-5599-4f7e-a5f4-5b74e8b6980a
+
+	column registro_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 503579b8-e78c-4d31-bd1c-d01fb26d01b2
+		summarizeBy: sum
+		sourceColumn: registro_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column fecha_key
+		dataType: int64
+		formatString: 0
+		lineageTag: a26100e5-aa22-4b45-b8ce-f5f5a4951d23
+		summarizeBy: none
+		sourceColumn: fecha_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column maquina_key
+		dataType: int64
+		formatString: 0
+		lineageTag: 0b92f040-c1d3-4ecd-9061-47b51740b542
+		summarizeBy: none
+		sourceColumn: maquina_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column turno_key
+		dataType: int64
+		formatString: 0
+		lineageTag: 2054412f-d249-4b5f-ade2-62bed61e47cf
+		summarizeBy: none
+		sourceColumn: turno_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column referencia_key
+		dataType: int64
+		formatString: 0
+		lineageTag: ee450df4-1345-4fea-9127-f0d0b9460b27
+		summarizeBy: none
+		sourceColumn: referencia_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column operario_key
+		dataType: int64
+		formatString: 0
+		lineageTag: d912ce33-ae9d-4180-9539-f5f4df6042b7
+		summarizeBy: none
+		sourceColumn: operario_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column horas_trabajadas
+		dataType: double
+		lineageTag: 13fdaf70-4580-4189-b28c-8e15fb658fff
+		summarizeBy: sum
+		sourceColumn: horas_trabajadas
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column horas_paro_total
+		dataType: double
+		lineageTag: ea8df32c-0fa5-42c1-b8c4-588fcd5c2213
+		summarizeBy: sum
+		sourceColumn: horas_paro_total
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column horas_paro_programado
+		dataType: double
+		lineageTag: 635e8b8b-0391-44b5-8cc7-7b013720b928
+		summarizeBy: sum
+		sourceColumn: horas_paro_programado
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column horas_paro_no_programado
+		dataType: double
+		lineageTag: 89cbd50f-4724-46be-a653-c38207658abd
+		summarizeBy: sum
+		sourceColumn: horas_paro_no_programado
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column horas_planificadas
+		dataType: double
+		lineageTag: 0f129e4a-9f46-4bb7-85f4-c6c31565302e
+		summarizeBy: sum
+		sourceColumn: horas_planificadas
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column horas_operativas
+		dataType: double
+		lineageTag: a3abdf99-9755-4d07-9745-83f29212c995
+		summarizeBy: sum
+		sourceColumn: horas_operativas
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column horas_reproceso
+		dataType: double
+		lineageTag: 4480fb16-5b3c-4292-96a2-8bbff1f5936a
+		summarizeBy: sum
+		sourceColumn: horas_reproceso
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column pacas_producidas_origen
+		dataType: double
+		lineageTag: 8517c66b-7bc9-4b0d-8982-da2374ab1a16
+		summarizeBy: sum
+		sourceColumn: pacas_producidas_origen
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column pacas_producidas
+		dataType: double
+		lineageTag: 9b2ad096-a628-43ca-860e-e82f4fb78bab
+		summarizeBy: sum
+		sourceColumn: pacas_producidas
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column tasa_ideal_pacas_h
+		dataType: double
+		lineageTag: 629576f9-f3e8-4aa4-a80e-908ef0fd99b6
+		summarizeBy: sum
+		sourceColumn: tasa_ideal_pacas_h
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column pacas_ideales
+		dataType: double
+		lineageTag: 45a4ae4f-d7d9-449b-87f5-4bf118632826
+		summarizeBy: sum
+		sourceColumn: pacas_ideales
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column pacas_meta_turno
+		dataType: double
+		lineageTag: 7852935a-ff5f-4c3b-969c-893c2c8de80d
+		summarizeBy: sum
+		sourceColumn: pacas_meta_turno
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column flag_pacas_atipicas
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: ab6a6f64-84fc-4d48-b4e5-ff12d078edd4
+		summarizeBy: none
+		sourceColumn: flag_pacas_atipicas
+
+		annotation SummarizationSetBy = Automatic
+
+	column flag_paro_excede_turno
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 12a3f3fc-d313-4aee-9635-af950716e82e
+		summarizeBy: none
+		sourceColumn: flag_paro_excede_turno
+
+		annotation SummarizationSetBy = Automatic
+
+	column flag_turno_recuperado
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 774a5b02-3515-4fbc-b134-963c4995d5d1
+		summarizeBy: none
+		sourceColumn: flag_turno_recuperado
+
+		annotation SummarizationSetBy = Automatic
+
+	column observaciones
+		dataType: string
+		lineageTag: 4b6d5dd1-b971-45d1-a72c-5fa47cac29b7
+		summarizeBy: none
+		sourceColumn: observaciones
+
+		annotation SummarizationSetBy = Automatic
+
+	partition fact_produccion_turno = m
+		mode: import
+		source =
+				let
+				    Origen = PostgreSQL.Database("127.0.0.1:5433", "bi_envasado"),
+				    dw_fact_produccion_turno = Origen{[Schema="dw",Item="fact_produccion_turno"]}[Data]
+				in
+				    dw_fact_produccion_turno
+
+	annotation PBI_NavigationStepName = Navegación
+
+	annotation PBI_ResultType = Table
+
