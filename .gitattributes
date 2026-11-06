@@ -1,0 +1,15 @@
+# Finales de línea LF para todo lo que se ejecuta dentro de contenedores Linux.
+# (Evita que Git en Windows convierta a CRLF y rompa los scripts de inicialización.)
+* text=auto eol=lf
+*.sh   text eol=lf
+*.sql  text eol=lf
+*.yml  text eol=lf
+*.yaml text eol=lf
+*.py   text eol=lf
+*.json text eol=lf
+*.tmdl text eol=lf
+*.xlsm binary
+*.xlsx binary
+*.pbix binary
+*.png  binary
+*.pdf  binary

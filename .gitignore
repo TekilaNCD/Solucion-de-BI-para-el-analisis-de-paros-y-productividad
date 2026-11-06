@@ -1,0 +1,33 @@
+# --- Secretos -----------------------------------------------------------------
+.env
+*.env.local
+
+# --- Datos fuente (contienen nombres de personas → Ley 1581 de 2012) -----------
+# El Excel se copia manualmente a data/raw/ (ver README).
+data/raw/*
+!data/raw/.gitkeep
+
+# --- Python -----------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+
+# --- Power BI (se versiona el proyecto .pbip, no los binarios) --------------------
+*.pbix
+**/.pbi/localSettings.json
+**/.pbi/cache.abf
+**/.pbi/*.abf
+
+# --- Reportes generados en cada corrida del ETL (se regeneran) --------------------
+docs/generado/*.csv
+!docs/generado/.gitkeep
+
+# --- Sistema / IDE ------------------------------------------------------------------
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+.dbeaver/
+*.log

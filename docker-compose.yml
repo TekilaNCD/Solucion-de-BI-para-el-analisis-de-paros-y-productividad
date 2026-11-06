@@ -1,0 +1,142 @@
+# =============================================================================
+# Solución BI · Paros y productividad en líneas de envasado
+# Levantar todo desde cero:      docker compose up -d --build
+# Re-ejecutar solo el ETL:        docker compose run --rm etl
+# Apagar (conserva datos):        docker compose down
+# Borrar TODO (volúmenes):        docker compose down -v
+# =============================================================================
+name: bi-envasado
+
+# Bloques reutilizables (anclas YAML)
+x-python-app: &python-app
+  build:
+    context: ./etl
+  image: bi-envasado/python:1.0
+  networks: [bi-net]
+
+x-pg-env: &pg-env
+  PGHOST: db
+  PGPORT: "5432"
+  PGDATABASE: ${POSTGRES_DB}
+  PGUSER: ${POSTGRES_USER}
+  PGPASSWORD: ${POSTGRES_PASSWORD}
+  TZ: ${TZ:-America/Bogota}
+
+services:
+
+  # ---------------------------------------------------------------- PostgreSQL
+  db:
+    image: postgres:16-alpine
+    container_name: bi-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      GRAFANA_DB_USER: ${GRAFANA_DB_USER}
+      GRAFANA_DB_PASSWORD: ${GRAFANA_DB_PASSWORD}
+      POWERBI_DB_USER: ${POWERBI_DB_USER}
+      POWERBI_DB_PASSWORD: ${POWERBI_DB_PASSWORD}
+      TZ: ${TZ:-America/Bogota}
+      PGTZ: ${TZ:-America/Bogota}
+    ports:
+      - "${POSTGRES_PORT:-5433}:5432"          # DBeaver y Power BI se conectan aquí
+    volumes:
+      - pgdata:/var/lib/postgresql/data         # persistencia
+      - ./db/init:/docker-entrypoint-initdb.d:ro  # DDL + roles (solo en la 1a creación del volumen)
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+    networks: [bi-net]
+
+  # ---------------------------------------------------------------- ETL (batch)
+  etl:
+    <<: *python-app
+    container_name: bi-etl
+    command: ["python", "-m", "etl"]
+    restart: "no"                               # corre una vez y termina (exit 0)
+    environment:
+      <<: *pg-env
+      FUENTE_EXCEL: /data/raw/${EXCEL_ARCHIVO}
+      REPORTE_DIR: /app/salida
+      SEUDONIMO_SALT: ${SEUDONIMO_SALT}
+    volumes:
+      - ./data/raw:/data/raw:ro                 # el Excel fuente (solo lectura)
+      - ./docs/generado:/app/salida             # reportes de calidad y reconciliación
+    depends_on:
+      db:
+        condition: service_healthy
+
+  # ---------------------------------------------------- Simulador hora a hora
+  simulador:
+    <<: *python-app
+    container_name: bi-simulador
+    command: ["python", "-m", "simulador"]
+    restart: unless-stopped
+    environment:
+      <<: *pg-env
+      SIM_TICK_SEGUNDOS: ${SIM_TICK_SEGUNDOS:-10}
+      SIM_BACKFILL_LECTURAS: ${SIM_BACKFILL_LECTURAS:-180}
+    depends_on:
+      etl:
+        condition: service_completed_successfully   # necesita las dimensiones cargadas
+
+  # ------------------------------------------ Receptor de alertas (webhook)
+  receptor-alertas:
+    <<: *python-app
+    container_name: bi-receptor-alertas
+    command: ["python", "-m", "receptor_alertas"]
+    restart: unless-stopped
+    environment:
+      <<: *pg-env
+    expose:
+      - "8000"                                  # solo red interna: Grafana lo llama por nombre
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request;urllib.request.urlopen('http://localhost:8000/salud')"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+    depends_on:
+      db:
+        condition: service_healthy
+
+  # ---------------------------------------------------------------- Grafana
+  grafana:
+    image: grafana/grafana:11.3.0
+    container_name: bi-grafana
+    restart: unless-stopped
+    ports:
+      - "${GRAFANA_PORT:-3000}:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GF_ADMIN_USER}
+      GF_SECURITY_ADMIN_PASSWORD: ${GF_ADMIN_PASSWORD}
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      GF_AUTH_ANONYMOUS_ENABLED: "false"
+      GF_ANALYTICS_REPORTING_ENABLED: "false"
+      GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH: /etc/grafana/dashboards/operativo_envasado.json
+      GF_DATE_FORMATS_DEFAULT_TIMEZONE: ${TZ:-America/Bogota}
+      # Variables que lee la provisión del datasource (provisioning/datasources/postgres.yml)
+      POSTGRES_DB: ${POSTGRES_DB}
+      GRAFANA_DB_USER: ${GRAFANA_DB_USER}
+      GRAFANA_DB_PASSWORD: ${GRAFANA_DB_PASSWORD}
+      TZ: ${TZ:-America/Bogota}
+    volumes:
+      - grafana-data:/var/lib/grafana                          # persistencia
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro    # datasource, tableros, alertas
+      - ./grafana/dashboards:/etc/grafana/dashboards:ro        # JSON del tablero (versionado)
+    depends_on:
+      db:
+        condition: service_healthy
+      receptor-alertas:
+        condition: service_healthy
+    networks: [bi-net]
+
+volumes:
+  pgdata:
+  grafana-data:
+
+networks:
+  bi-net:
+    name: bi-envasado-net
