@@ -1,0 +1,115 @@
+# =============================================================================
+# Alertas provisionadas (Grafana Unified Alerting) – se cargan solas al iniciar.
+#
+# Regla 1 · OEE bajo: OEE móvil de las últimas 12 lecturas (12 h de producción) < 60 %
+#   Justificación del umbral: con los datos históricos 2023-2025 del DW, el OEE por turno
+#   tiene P25 = 0,58 y mediana = 0,72; el OEE mensual tiene P25 = 0,55 y mediana = 0,67.
+#   60 % es además la referencia "típica" de la industria (clase mundial = 85 %).
+#   Bajar de 60 % significa que la línea está en su peor cuartil histórico → requiere acción.
+#   "for: 30s" (≈ 3 lecturas) evita alertar por una sola hora mala.
+#
+# Regla 2 · Línea sin señal: una máquina no envía lecturas hace más de 60 s
+#   (≈ 6 horas simuladas). Detecta caída del PLC / simulador / red.
+# =============================================================================
+apiVersion: 1
+
+contactPoints:
+  - orgId: 1
+    name: bitacora-bd
+    receivers:
+      - uid: webhook-bitacora
+        type: webhook
+        disableResolveMessage: false
+        settings:
+          url: http://receptor-alertas:8000/grafana   # servicio interno de docker compose
+          httpMethod: POST
+
+policies:
+  - orgId: 1
+    receiver: bitacora-bd
+    group_by: ['alertname', 'maquina']
+    group_wait: 5s
+    group_interval: 30s
+    repeat_interval: 30m
+
+groups:
+  - orgId: 1
+    name: envasado-tiempo-real
+    folder: Envasado
+    interval: 10s
+    rules:
+      - uid: oee-bajo-maquina
+        title: OEE bajo por máquina
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange: { from: 600, to: 0 }
+            datasourceUid: pg-bi
+            model:
+              refId: A
+              editorMode: code
+              format: table
+              rawQuery: true
+              rawSql: >-
+                SELECT maquina, oee::float AS oee
+                FROM ops.v_oee_reciente
+          - refId: C
+            datasourceUid: __expr__
+            model:
+              refId: C
+              type: threshold
+              expression: A
+              datasource: { type: __expr__, uid: __expr__ }
+              conditions:
+                - evaluator: { type: lt, params: [0.6] }
+        noDataState: OK
+        execErrState: Error
+        for: 30s
+        isPaused: false
+        labels:
+          severidad: critica
+          area: produccion
+        annotations:
+          summary: 'OEE de {{ $labels.maquina }} en {{ humanizePercentage $values.A.Value }} (umbral 60 %)'
+          description: 'El OEE móvil de las últimas 12 horas de producción cayó por debajo del 60 % (peor cuartil histórico). Revisar el paro principal en el panel "Estado actual".'
+          __dashboardUid__: envasado-operativo
+          __panelId__: '4'
+
+      - uid: linea-sin-senal
+        title: Línea sin señal
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange: { from: 600, to: 0 }
+            datasourceUid: pg-bi
+            model:
+              refId: A
+              editorMode: code
+              format: table
+              rawQuery: true
+              rawSql: >-
+                SELECT m.maquina_codigo AS maquina,
+                       COALESCE(EXTRACT(EPOCH FROM now() - MAX(h.ts)), 99999)::float AS segundos_sin_datos
+                FROM dw.dim_maquina m
+                LEFT JOIN ops.fact_produccion_hora h
+                       ON h.maquina_key = m.maquina_key AND h.ts > now() - interval '1 day'
+                GROUP BY m.maquina_codigo
+          - refId: C
+            datasourceUid: __expr__
+            model:
+              refId: C
+              type: threshold
+              expression: A
+              datasource: { type: __expr__, uid: __expr__ }
+              conditions:
+                - evaluator: { type: gt, params: [60] }
+        noDataState: Alerting
+        execErrState: Error
+        for: 20s
+        isPaused: false
+        labels:
+          severidad: alta
+          area: sistemas
+        annotations:
+          summary: '{{ $labels.maquina }} sin lecturas hace {{ humanize $values.A.Value }} s'
+          description: 'No llegan datos hora a hora de la línea (PLC, red o simulador caído).'

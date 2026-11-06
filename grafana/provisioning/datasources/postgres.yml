@@ -1,0 +1,24 @@
+# Datasource provisionado: Grafana lo crea solo al arrancar (sin configuración manual).
+# Las credenciales llegan por variables de entorno del contenedor (.env).
+apiVersion: 1
+
+datasources:
+  - name: PostgreSQL BI Envasado
+    uid: pg-bi
+    type: grafana-postgresql-datasource
+    access: proxy
+    url: db:5432                      # nombre del servicio en la red de Docker
+    user: $GRAFANA_DB_USER            # rol de SOLO LECTURA (dw, ops)
+    isDefault: true
+    editable: false
+    jsonData:
+      database: $POSTGRES_DB
+      sslmode: disable                # tráfico dentro de la red interna de Docker
+      postgresVersion: 1600
+      timescaledb: false
+      maxOpenConns: 10
+      maxIdleConns: 5
+      connMaxLifetime: 14400
+      timeInterval: 10s
+    secureJsonData:
+      password: $GRAFANA_DB_PASSWORD

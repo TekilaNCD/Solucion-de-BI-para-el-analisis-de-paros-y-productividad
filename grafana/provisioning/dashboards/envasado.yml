@@ -1,0 +1,15 @@
+# Proveedor de tableros: carga todo JSON de /etc/grafana/dashboards en la carpeta "Envasado".
+apiVersion: 1
+
+providers:
+  - name: envasado
+    orgId: 1
+    folder: Envasado
+    folderUid: envasado
+    type: file
+    disableDeletion: true
+    allowUiUpdates: false             # el JSON versionado en Git es la fuente de verdad
+    updateIntervalSeconds: 30
+    options:
+      path: /etc/grafana/dashboards
+      foldersFromFilesStructure: false
