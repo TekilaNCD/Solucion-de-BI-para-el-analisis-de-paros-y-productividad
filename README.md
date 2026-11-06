@@ -4,6 +4,7 @@
 Integrantes: **Nicolás Cataño Durango** · **Julián Ramírez Molina**
 Repositorio: <https://github.com/TekilaNCD/Solucion-de-BI-para-el-analisis-de-paros-y-productividad>
 
+RECUERDA: para reproducirlo, tiene que copiar el Excel SEGUIMIENTO TEMPERAS Y VINILOS Actividad.xlsm a data/raw/ antes del docker compose up
 Solución end-to-end que reemplaza el reporte mensual en Excel del procedimiento **P-MTO-22** por:
 
 - un **modelo dimensional** (constelación de hechos) en **PostgreSQL 16**,
