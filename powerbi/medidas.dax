@@ -65,8 +65,16 @@ Var Pacas vs Mes Anterior % = DIVIDE ( [Pacas] - [Pacas Mes Anterior], [Pacas Me
 Pacas Año Anterior = CALCULATE ( [Pacas], SAMEPERIODLASTYEAR ( dim_fecha[fecha] ) )
 Var Pacas YoY % = DIVIDE ( [Pacas] - [Pacas Año Anterior], [Pacas Año Anterior] )
 
-Pacas YTD = TOTALYTD ( [Pacas], dim_fecha[fecha] )
-Pacas YTD Año Anterior = CALCULATE ( [Pacas YTD], SAMEPERIODLASTYEAR ( dim_fecha[fecha] ) )
+// YTD hasta la ÚLTIMA fecha con datos del contexto (dim_fecha llega a 2027; los datos a mar-2025)
+Pacas YTD =
+VAR _ult = CALCULATE ( MAX ( dim_fecha[fecha] ), fact_produccion_turno )
+RETURN CALCULATE ( [Pacas], DATESBETWEEN ( dim_fecha[fecha], DATE ( YEAR ( _ult ), 1, 1 ), _ult ) )
+
+Pacas YTD Año Anterior =
+VAR _ult = CALCULATE ( MAX ( dim_fecha[fecha] ), fact_produccion_turno )
+RETURN CALCULATE ( [Pacas], DATESBETWEEN ( dim_fecha[fecha], DATE ( YEAR ( _ult ) - 1, 1, 1 ), EDATE ( _ult, -12 ) ) )
+
+Var Pacas YTD % = DIVIDE ( [Pacas YTD] - [Pacas YTD Año Anterior], [Pacas YTD Año Anterior] )
 
 OEE Año Anterior = CALCULATE ( [OEE], SAMEPERIODLASTYEAR ( dim_fecha[fecha] ) )
 Var OEE YoY (pp) = IF ( ISBLANK ( [OEE Año Anterior] ), BLANK (), [OEE] - [OEE Año Anterior] )

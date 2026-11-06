@@ -72,8 +72,6 @@ groups:
         annotations:
           summary: 'OEE de {{ $labels.maquina }} en {{ humanizePercentage $values.A.Value }} (umbral 60 %)'
           description: 'El OEE móvil de las últimas 12 horas de producción cayó por debajo del 60 % (peor cuartil histórico). Revisar el paro principal en el panel "Estado actual".'
-          __dashboardUid__: envasado-operativo
-          __panelId__: '4'
 
       - uid: linea-sin-senal
         title: Línea sin señal
