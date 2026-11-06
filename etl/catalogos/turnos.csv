@@ -1,0 +1,9 @@
+turno_key,turno_codigo,descripcion,hora_inicio,hora_fin,duracion_h,esquema,jornada,texto_origen
+1,T1,6am-2pm (Turno 1),06:00,14:00,8,3x8,Diurno,6am-2pm (Turno 1)|6am-2pm
+2,T2,2pm-10pm (Turno 2),14:00,22:00,8,3x8,Mixto,2pm-10pm (Turno 2)|2pm-10pm
+3,T3,10pm-6am (Turno 3),22:00,06:00,8,3x8,Nocturno,10pm-6am (Turno 3)|10pm-6am
+4,D105,6am-4:30pm,06:00,16:30,10.5,1x10.5,Diurno,6am-4:30pm
+5,D12,6am-6pm,06:00,18:00,12,2x12,Diurno,6am-6pm
+6,N12,6pm-6am,18:00,06:00,12,2x12,Nocturno,6pm-6am
+-1,SR,Sin registro,,,,N/A,N/A,
+-2,NA,No aplica,,,,N/A,N/A,No aplica

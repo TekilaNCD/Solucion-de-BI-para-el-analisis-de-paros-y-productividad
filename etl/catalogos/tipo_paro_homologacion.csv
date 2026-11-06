@@ -1,0 +1,20 @@
+texto_origen,causa_homologada,area_responsable,catalogo
+[19] No aplica,Sin causa reportada,No aplica,P-MTO-22 v1
+17. PARO DE MAQUINA,Paro de máquina (sin detalle),Producción,Legado
+[18] Paro de maquina por ventas,Sin demanda / ventas,Ventas,P-MTO-22 v1
+9.FALTA DE PROGRAMACIÓN (PLANEACIÓN),Falta de programación (planeación),Planeación,Legado
+16. PARO POR PROCESO ANTERIOR,Paro por proceso anterior,Producción,Legado
+10. PARO POR MATERIA PRIMA O MATERIAL DE EMPAQUE NO CONFORME,Materia prima / empaque no conforme,Calidad,Legado
+[12] Materia prima defectuosa o material de empaque no conforme,Materia prima / empaque no conforme,Calidad,P-MTO-22 v1
+6. FALTA DE MATERIALES O MATERIAS PRIMAS,Falta de materia prima / materiales,Almacén de materias primas,Legado
+[14] Falta de materia prima,Falta de materia prima / materiales,Almacén de materias primas,P-MTO-22 v1
+15. APROBACION DE LABORATORIO (MICROBIOLOGIA),Espera aval de laboratorio,Calidad,Legado
+[13] En espera por el aval del laboratorio de microbiología,Espera aval de laboratorio,Calidad,P-MTO-22 v1
+[09] Falta de operario,Falta de operario,Producción,P-MTO-22 v1
+[05] Ajuste operativo,Ajuste operativo,Producción,P-MTO-22 v1
+4.AJUSTE DE OPERACIÓN,Ajuste operativo,Producción,Legado
+5. AISLAMIENTO/CAMBIO DE PRODUCTO,Alistamiento / cambio de referencia,Producción,Legado
+[07] Alistamiento de máquina / Cambio de referencia,Alistamiento / cambio de referencia,Producción,P-MTO-22 v1
+"3. AJUSTE ELECTRICO O DE SERVICIOS (AIRE, CALDERA, GAS)",Novedad en sistemas de potencia,Mantenimiento,Legado
+"[03] Novedad en los sistemas de potencia (Aire, energía, vapor)",Novedad en sistemas de potencia,Mantenimiento,P-MTO-22 v1
+11. LIMPIEZA NO PROGRAMADA,Limpieza no programada,Producción,Legado

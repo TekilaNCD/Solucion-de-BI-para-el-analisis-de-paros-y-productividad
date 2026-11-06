@@ -1,0 +1,19 @@
+codigo_paro,nombre_paro,area_impacto,es_programado,categoria_oee
+01,Falla del sistema electromecánico y/o de control,Mantenimiento,false,Pérdida de disponibilidad
+02,Espera de soporte de mantenimiento,Mantenimiento,false,Pérdida de disponibilidad
+03,"Novedad en los sistemas de potencia (Aire, energía, vapor)",Mantenimiento,false,Pérdida de disponibilidad
+04,Mantenimiento preventivo,Mantenimiento,true,Paro programado
+05,Ajuste operativo,Producción,false,Pérdida de disponibilidad
+06,Limpieza por derrame operativo,Producción,false,Pérdida de disponibilidad
+07,Alistamiento de máquina / Cambio de referencia,Producción,false,Pérdida de disponibilidad
+08,Capacitación / Reunión,Producción,false,Pérdida de disponibilidad
+09,Falta de operario,Producción,false,Pérdida de disponibilidad
+10,Paro por ventaja/evacuación,Producción,false,Pérdida de disponibilidad
+11,Reproceso,Producción,false,Pérdida de calidad
+12,Materia prima defectuosa,Calidad,false,Pérdida de disponibilidad
+13,En espera por el aval del laboratorio de microbiología,Calidad,false,Pérdida de disponibilidad
+14,Falta de materia prima,Almacén de materias primas,false,Pérdida de disponibilidad
+15,"Cambio de insumos (Roscadores, O'ring, Etiquetas)",Paro programado,true,Paro programado
+16,Alimentación y aseo de la zona de trabajo y la máquina,Paro programado,true,Paro programado
+17,Pausa activa,Paro programado,true,Paro programado
+18,Desinfección,Paro programado,true,Paro programado

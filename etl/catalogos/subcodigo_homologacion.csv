@@ -1,0 +1,10 @@
+codigo_origen,codigo_destino,motivo
+4.1,5.1,Catálogo legado de ajuste operativo (4.x) renumerado a 5.x en P-MTO-22 v1
+4.2,5.2,Catálogo legado de ajuste operativo (4.x) renumerado a 5.x en P-MTO-22 v1
+4.3,5.3,Catálogo legado de ajuste operativo (4.x) renumerado a 5.x en P-MTO-22 v1
+4.4,5.5,Legado 4.4 Transfer y pisador = 5.5 en v1
+4.5,5.6,Legado 4.5 Alimentador de tapa y tobogán = 5.6 en v1
+4.6,5.7,Legado 4.6 Video Jet = 5.7 en v1
+4.7,5.8,Legado 4.7 Banda de sujeción y roscadores = 5.8 en v1
+4.8,5.9,Legado 4.8 Sistema de etiquetado = 5.9 en v1
+1.4.3,1.4.C,Error de digitación en catálogo (1.4.3 Sensor debe ser 1.4.C)

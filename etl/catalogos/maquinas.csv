@@ -1,0 +1,5 @@
+maquina_key,maquina_codigo,nombre,linea_producto,planta,factor_velocidad
+1,Vinilos_1,Línea de envasado Vinilos 1,Vinilos y témperas,Planta principal,1.10
+2,Vinilos_2,Línea de envasado Vinilos 2,Vinilos y témperas,Planta principal,1.16
+3,Vinilos_3,Línea de envasado Vinilos 3,Vinilos y témperas,Planta principal,1.00
+4,Vinilos_4,Línea de envasado Vinilos 4,Vinilos y témperas,Planta principal,1.00
