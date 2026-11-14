@@ -1,4 +1,4 @@
-# Solución de BI para el análisis de paros y productividad en líneas de envasado
+# Solución de BI para el análisis de paros y productividad en líneas de envasado.
 
 **Business Intelligence (ET0194) · Taller 5 / Proyecto final**
 Integrantes: **Nicolás Cataño Durango** · **Julián Ramírez Molina**
